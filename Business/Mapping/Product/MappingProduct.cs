@@ -1,6 +1,8 @@
 using System;
 using AutoMapper;
-using Business.DTOs.Product;
+using Business.Features.Product.Command.AddProduct;
+using Business.Features.Product.Command.UpdateProduct;
+using Business.Features.Product.Dtos;
 using E = Domain.Entities;
 
 namespace Business.Mapping.Product;
@@ -11,9 +13,9 @@ public class MappingProduct : Profile
     {
         CreateMap<E.Product, ProductDTO>().ReverseMap();
     
-        CreateMap<ProductCreateDTO, E.Product>().ReverseMap();
+        CreateMap<AddProductCommandRequest, E.Product>().ReverseMap();
     
-        CreateMap<ProductUpdateDTO, E.Product>()
+        CreateMap<UpdateProductCommandRequest, E.Product>()
         .ForMember(dest => dest.Picture, opt =>
         {
             opt.Condition(src => src.Picture != null);

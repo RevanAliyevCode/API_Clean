@@ -1,6 +1,8 @@
 using System;
 using AutoMapper;
-using Business.DTOs.User;
+using Business.Features.User.Command.LoginUser;
+using Business.Features.User.Command.RegisterUser;
+using Business.Features.User.Dtos;
 using Domain.Entities;
 
 namespace Business.Mapping.User;
@@ -11,8 +13,8 @@ public class MappingUser : Profile
     {
         CreateMap<AppUser, UserDTO>().ReverseMap();
 
-        CreateMap<RegisterUserDTO, AppUser>().ReverseMap();
+        CreateMap<RegisterUserCommandRequest, AppUser>().ReverseMap();
 
-        CreateMap<LoginUserDTO, AppUser>().ReverseMap();
+        CreateMap<LoginUserCommandRequest, AppUser>().ReverseMap();
     }
 }

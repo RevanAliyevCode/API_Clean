@@ -1,6 +1,11 @@
-using Business.DTOs.Product;
-using Business.Services.Product;
+using Business.Features.Product.Command.AddProduct;
+using Business.Features.Product.Command.DeleteProduct;
+using Business.Features.Product.Command.UpdateProduct;
+using Business.Features.Product.Dtos;
+using Business.Features.Product.Query.GetAllProducts;
+using Business.Features.Product.Query.GetProductById;
 using Business.Wrappers;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,22 +17,23 @@ namespace Presentation.Controllers
     [Authorize(Roles = "Admin, Seller")]
     public class ProductController : ControllerBase
     {
-        readonly IProductService _productService;
+        readonly IMediator _mediator;
 
-        public ProductController(IProductService productService)
+        public ProductController(IMediator mediator)
         {
-            _productService = productService;
+            _mediator = mediator;
         }
 
         [ProducesResponseType(typeof(ResponseSuccess<List<ProductDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseError), StatusCodes.Status500InternalServerError)]
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(GetAllProductsQueryRequest request)
         {
-            var products = await _productService.GetAllProductsAsync();
-            return Ok(products);
+            var response = await _mediator.Send(request);
+            return Ok(response);
         }
+
 
         [ProducesResponseType(typeof(ResponseSuccess<ProductDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseError), StatusCodes.Status404NotFound)]
@@ -36,18 +42,18 @@ namespace Presentation.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Get(int id)
         {
-            var product = await _productService.GetProductByIdAsync(id);
-            return Ok(product);
+            var response = await _mediator.Send(new GetProductByIdQueryRequest { Id = id });
+            return Ok(response);
         }
 
         [ProducesResponseType(typeof(ResponseSuccess<ProductDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseError), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseError), StatusCodes.Status500InternalServerError)]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] ProductCreateDTO productDto)
+        public async Task<IActionResult> Post([FromBody] AddProductCommandRequest request)
         {
-            var product = await _productService.AddProductAsync(productDto);
-            return Ok(product);
+            var response = await _mediator.Send(request);
+            return Ok(response);
         }
 
         [ProducesResponseType(typeof(ResponseSuccess<ProductDTO>), StatusCodes.Status200OK)]
@@ -55,11 +61,13 @@ namespace Presentation.Controllers
         [ProducesResponseType(typeof(ResponseError), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseError), StatusCodes.Status500InternalServerError)]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] ProductUpdateDTO productDto)
+        public async Task<IActionResult> Put(int id, [FromBody] UpdateProductCommandRequest request)
         {
-            var product = await _productService.UpdateProductAsync(id, productDto);
-            return Ok(product);
+            request.Id = id;
+            var response = await _mediator.Send(request);
+            return Ok(response);
         }
+
 
         [ProducesResponseType(typeof(Response), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseError), StatusCodes.Status404NotFound)]
@@ -67,7 +75,7 @@ namespace Presentation.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var response = await _productService.DeleteProductAsync(id);
+            var response = await _mediator.Send(new DeleteProductCommandRequest { Id = id });
             return Ok(response);
         }
     }

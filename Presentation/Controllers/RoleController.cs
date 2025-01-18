@@ -1,6 +1,9 @@
-using Business.DTOs.Role;
-using Business.Services.Roles;
+using Business.Features.Role.Command.AddRoleToUser;
+using Business.Features.Role.Command.DeleteRoleFromUser;
+using Business.Features.Role.Dtos;
+using Business.Features.Role.Query.GetRolesQuery;
 using Business.Wrappers;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,20 +15,20 @@ namespace Presentation.Controllers
     [Authorize(Roles = "Admin")]
     public class RoleController : ControllerBase
     {
-        readonly IRoleService _roleService;
+        readonly IMediator _mediator;
 
-        public RoleController(IRoleService roleService)
+        public RoleController(IMediator mediator)
         {
-            _roleService = roleService;
+            _mediator = mediator;
         }
 
         [ProducesResponseType(typeof(ResponseSuccess<List<RoleDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseError), StatusCodes.Status500InternalServerError)]
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(GetRolesQueryRequest request)
         {
-            var roles = await _roleService.GetRolesAsync();
-            return Ok(roles);
+            var response = await _mediator.Send(request);
+            return Ok(response);
         }
 
 
@@ -33,10 +36,10 @@ namespace Presentation.Controllers
         [ProducesResponseType(typeof(ResponseError), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseError), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ResponseError), StatusCodes.Status500InternalServerError)]
-        [HttpPost("add/{userId}")]
-        public async Task<IActionResult> Add(string userId, [FromBody] RoleDTO roleDto)
+        [HttpPost("addtoUser")]
+        public async Task<IActionResult> Add(string userId, string roleId)
         {
-            var response = await _roleService.AddUserRoleAsync(userId, roleDto);
+            var response = await _mediator.Send(new AddRoleToUserCommandRequest { UserId = userId, RoleId = roleId });
             return Ok(response);
         }
 
@@ -44,10 +47,10 @@ namespace Presentation.Controllers
         [ProducesResponseType(typeof(ResponseError), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseError), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ResponseError), StatusCodes.Status500InternalServerError)]
-        [HttpDelete("delete/{userId}")]
-        public async Task<IActionResult> Delete(string userId, [FromBody] RoleDTO roleDto)
+        [HttpDelete("deleteFromUser")]
+        public async Task<IActionResult> From(string userId, string roleId)
         {
-            var response = await _roleService.DeleteUserRoleAsync(userId, roleDto);
+            var response = await _mediator.Send(new DeleteRoleFromUserCommandRequest { UserId = userId, RoleId = roleId });
             return Ok(response);
         }
     }

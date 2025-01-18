@@ -1,6 +1,8 @@
-using Business.DTOs.User;
-using Business.Services.User;
+using Business.Features.User.Command.LoginUser;
+using Business.Features.User.Command.RegisterUser;
+using Business.Features.User.Dtos;
 using Business.Wrappers;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,11 +12,11 @@ namespace Presentation.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        readonly IUserService _userService;
+        readonly IMediator _mediator;
 
-        public AuthController(IUserService userService)
+        public AuthController(IMediator mediator)
         {
-            _userService = userService;
+            _mediator = mediator;
         }
 
         [ProducesResponseType(typeof(Response), StatusCodes.Status200OK)]
@@ -22,39 +24,22 @@ namespace Presentation.Controllers
         [ProducesResponseType(typeof(ResponseError), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ResponseError), StatusCodes.Status500InternalServerError)]
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterUserDTO userDto)
+        public async Task<IActionResult> Register([FromBody] RegisterUserCommandRequest request)
         {
-            var response = await _userService.RegisterUserAsync(userDto);
+            var response = await _mediator.Send(request);
             return Ok(response);
         }
 
-        [ProducesResponseType(typeof(TokenDTO), StatusCodes.Status200OK)]
+
+        [ProducesResponseType(typeof(ResponseSuccess<TokenDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseError), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseError), StatusCodes.Status500InternalServerError)]
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginUserDTO userDto)
+        public async Task<IActionResult> Login([FromBody] LoginUserCommandRequest request)
         {
-            var response = await _userService.LoginUserAsync(userDto);
+            var response = await _mediator.Send(request);
             return Ok(response);
         }
 
-        [ProducesResponseType(typeof(ResponseSuccess<List<UserDTO>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ResponseError), StatusCodes.Status500InternalServerError)]
-        [HttpGet("users")]
-        public async Task<IActionResult> GetUsers()
-        {
-            var users = await _userService.GetUsersAsync();
-            return Ok(users);
-        }
-
-        [ProducesResponseType(typeof(Response), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ResponseError), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ResponseError), StatusCodes.Status500InternalServerError)]
-        [HttpDelete("users/{id}")]
-        public async Task<IActionResult> DeleteUser(string id)
-        {
-            var response = await _userService.DeleteUserAsync(id);
-            return Ok(response);
-        }
     }
 }
