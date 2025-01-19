@@ -50,7 +50,7 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommandRequest, 
             new(ClaimTypes.Role, (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? string.Empty),
         };
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SecurityKey"]) ?? throw new InvalidOperationException("JWT_SECRET is not set"));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SecretKey"]) ?? throw new InvalidOperationException("JWT_SECRET is not set"));
 
         var token = new JwtSecurityToken(
             issuer: _configuration["JWT:Issuer"],

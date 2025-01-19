@@ -22,7 +22,8 @@ public static class DataServiceRegestration
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
 
-        services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<IProductReadRepository, ProductReadRepository>();
+        services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
         services.AddScoped<U.IUnitOfWork, U.UnitOfWork>();
     }
 }

@@ -31,6 +31,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommandReq
             throw new ValidationException(state.Errors);
 
         var user = _mapper.Map<AppUser>(request);
+        user.UserName = request.Email;
 
         var result = await _userManager.CreateAsync(user, request.Password);
 
