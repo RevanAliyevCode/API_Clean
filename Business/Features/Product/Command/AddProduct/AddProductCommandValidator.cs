@@ -31,6 +31,8 @@ public class AddProductCommandValidator : AbstractValidator<AddProductCommandReq
 
     private bool IsImageValid(string image)
     {
+        if (string.IsNullOrEmpty(image))
+            return false;
         string extension = image[..5];
 
         return extension.ToLower() switch
