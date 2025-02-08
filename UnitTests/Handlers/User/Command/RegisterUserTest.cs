@@ -1,8 +1,8 @@
 using System;
+using API.Application.Features.User.Command.RegisterUser;
+using API.Domain.Entities;
+using API.Domain.Exceptions;
 using AutoMapper;
-using Business.Features.User.Command.RegisterUser;
-using Domain.Entities;
-using Domain.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 

@@ -1,11 +1,11 @@
 using System;
+using API.Application.Abstraction.UnitOfWork;
+using API.Application.Features.Product.Command.UpdateProduct;
+using API.Application.Features.Product.Dtos;
+using API.Application.Wrappers;
+using API.Domain.Exceptions;
+using API.Domain.Repositories.Product;
 using AutoMapper;
-using Business.Features.Product.Command.UpdateProduct;
-using Business.Features.Product.Dtos;
-using Business.Wrappers;
-using Data.Repositeries.Product;
-using Data.UnitOfWork;
-using Domain.Exceptions;
 using Moq;
 
 namespace UnitTests.Handlers.Product.Command;
@@ -42,7 +42,7 @@ public class UpdateProductHandlerTest
             Description = "Description kcckeded edjnekdned endkende denkdnednjed kendke",
         };
 
-        _productRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync((Domain.Entities.Product)null);
+        _productRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync((API.Domain.Entities.Product)null);
 
     
         // Act
@@ -76,7 +76,7 @@ public class UpdateProductHandlerTest
         // Assert
         Assert.IsType<ResponseSuccess<ProductDTO>>(result);
         Assert.True(result.Succeeded);
-        _productWriteRepositoryMock.Verify(x => x.Update(It.IsAny<Domain.Entities.Product>()), Times.Once);
+        _productWriteRepositoryMock.Verify(x => x.Update(It.IsAny<API.Domain.Entities.Product>()), Times.Once);
         _unitOfWorkMock.Verify(x => x.CommitChangesAsync(), Times.Once);
     }
 }

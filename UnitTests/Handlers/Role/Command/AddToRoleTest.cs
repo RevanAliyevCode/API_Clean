@@ -1,7 +1,7 @@
 using System;
-using Business.Features.Role.Command.AddRoleToUser;
-using Domain.Entities;
-using Domain.Exceptions;
+using API.Application.Features.Role.Command.AddRoleToUser;
+using API.Domain.Entities;
+using API.Domain.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 

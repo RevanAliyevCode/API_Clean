@@ -1,13 +1,13 @@
+using API.Application.Features.User.Dtos;
+using API.Application.Features.User.Query.GetUsers;
+using API.Application.Wrappers;
 using Business.Features.User.Command.DeleteUser;
-using Business.Features.User.Dtos;
-using Business.Features.User.Query.GetUsers;
-using Business.Wrappers;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Presentation.Controllers
+namespace API.Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

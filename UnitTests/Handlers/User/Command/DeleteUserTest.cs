@@ -1,7 +1,8 @@
 using System;
+using API.Application.Features.User.Command.DeleteUser;
+using API.Domain.Entities;
+using API.Domain.Exceptions;
 using Business.Features.User.Command.DeleteUser;
-using Domain.Entities;
-using Domain.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 

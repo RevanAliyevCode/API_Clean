@@ -1,9 +1,10 @@
 using System;
+using API.Application.Abstraction.UnitOfWork;
+using API.Application.Features.Product.Command.DeleteProduct;
+using API.Application.Wrappers;
+using API.Domain.Exceptions;
+using API.Domain.Repositories.Product;
 using Business.Features.Product.Command.DeleteProduct;
-using Business.Wrappers;
-using Data.Repositeries.Product;
-using Data.UnitOfWork;
-using Domain.Exceptions;
 using Moq;
 
 namespace UnitTests.Handlers.Product.Command;
@@ -33,7 +34,7 @@ public class DeleteProductHandlerTest
             Id = default
         };
         // Act
-        _productReadRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync((Domain.Entities.Product)null);
+        _productReadRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync((API.Domain.Entities.Product)null);
 
         Func<Task> act = async () => await _handler.Handle(request, CancellationToken.None);
 
@@ -60,7 +61,7 @@ public class DeleteProductHandlerTest
         // Assert
         Assert.IsType<Response>(result);
         Assert.True(result.Succeeded);
-        _productWriteRepositoryMock.Verify(x => x.Delete(It.IsAny<Domain.Entities.Product>()), Times.Once);
+        _productWriteRepositoryMock.Verify(x => x.Delete(It.IsAny<API.Domain.Entities.Product>()), Times.Once);
         _unitOfWorkMock.Verify(x => x.CommitChangesAsync(), Times.Once);
     }
 }

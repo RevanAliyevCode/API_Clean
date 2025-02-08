@@ -1,10 +1,10 @@
-using AutoMapper;
-using Business;
-using Data;
-using Domain.Entities;
+using API.Application;
+using API.Domain.Entities;
+using API.Presentation.Middlewares;
+using API.Presentation.Reflection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
-using Presentation.Middlewares;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,8 +43,13 @@ builder.Services.AddSwaggerGen(opt =>
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.RegisterDataServices(builder.Configuration.GetConnectionString("DefaultConnection"));
-builder.Services.RegisterBusinessServices();
+builder.Services.AddApplicationServices();
+
+builder.Services.AddInfrastructureServices(builder.Configuration);
+
+Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
+
+builder.Host.UseSerilog();
 
 var app = builder.Build();
 
@@ -66,11 +71,6 @@ app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.MapControllers();
 
-using (var scope = app.Services.CreateScope())
-{
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    await DbInitalizer.SeedAsync(userManager, roleManager);
-}
+await app.Services.InitializeIdentityDataAsync();
 
 app.Run();

@@ -1,7 +1,7 @@
 using System;
-using Business.Features.Role.Command.DeleteRoleFromUser;
-using Domain.Entities;
-using Domain.Exceptions;
+using API.Application.Features.Role.Command.DeleteRoleFromUser;
+using API.Domain.Entities;
+using API.Domain.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 

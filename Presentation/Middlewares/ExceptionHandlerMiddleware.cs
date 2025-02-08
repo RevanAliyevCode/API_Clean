@@ -1,12 +1,13 @@
 using System;
+using API.Domain.Exceptions;
 using Business.Wrappers;
-using Domain.Exceptions;
 
-namespace Presentation.Middlewares;
+namespace API.Presentation.Middlewares;
 
 public class ExceptionHandlerMiddleware
 {
     private readonly RequestDelegate _next;
+    readonly ILogger<ExceptionHandlerMiddleware> _logger;
 
     public ExceptionHandlerMiddleware(RequestDelegate next)
     {
@@ -34,6 +35,7 @@ public class ExceptionHandlerMiddleware
                     response.Errors = e.Errors;
                     break;
                 default:
+                    _logger.LogError($"Message: {ex.Message} StackTrace: {ex.StackTrace} InnerException: {ex.InnerException}");
                     context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                     response.Errors.Add("An error occured");
                     break;

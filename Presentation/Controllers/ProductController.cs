@@ -1,16 +1,16 @@
-using Business.Features.Product.Command.AddProduct;
+using API.Application.Features.Product.Command.AddProduct;
+using API.Application.Features.Product.Command.UpdateProduct;
+using API.Application.Features.Product.Dtos;
+using API.Application.Features.Product.Query.GetAllProducts;
+using API.Application.Wrappers;
 using Business.Features.Product.Command.DeleteProduct;
-using Business.Features.Product.Command.UpdateProduct;
-using Business.Features.Product.Dtos;
-using Business.Features.Product.Query.GetAllProducts;
 using Business.Features.Product.Query.GetProductById;
-using Business.Wrappers;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Presentation.Controllers
+namespace API.Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

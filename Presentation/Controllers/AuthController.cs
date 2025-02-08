@@ -1,12 +1,12 @@
-using Business.Features.User.Command.LoginUser;
-using Business.Features.User.Command.RegisterUser;
-using Business.Features.User.Dtos;
-using Business.Wrappers;
+using API.Application.Features.User.Command.LoginUser;
+using API.Application.Features.User.Command.RegisterUser;
+using API.Application.Features.User.Dtos;
+using API.Application.Wrappers;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Presentation.Controllers
+namespace API.Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
